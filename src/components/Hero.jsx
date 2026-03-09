@@ -1,61 +1,98 @@
-// src/components/Hero.jsx
-import loading from '../assets/acatxio-graphics-card-14927_512.gif'
 import { motion } from 'framer-motion';
+// Ensure this path matches your project structure
+import loading from '../assets/acatxio-graphics-card-14927_512.gif';
 
 export default function Hero() {
     return (
-        <section className="relative h-screen flex items-center justify-center bg-[#faf9f6] overflow-hidden">
+        <section className="relative h-screen w-full flex items-center justify-center bg-[#fdfdf5] overflow-hidden">
 
-            {/* 1. THE SUN FLARE - Switched to MULTIPLY + DEEPER ORANGE */}
+            {/* --- 1. THE CONCENTRIC SUNSET LAMP --- */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div
+                    animate={{
+                        scale: [1, 1.05, 1],
+                        opacity: [0.7, 0.8, 0.7],
+                    }}
+                    transition={{
+                        duration: 15,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    className="absolute -top-[10%] -left-[10%] w-[90vw] h-[90vw] max-w-[900px] max-h-[900px] rounded-full z-0 mix-blend-multiply"
+                    style={{
+                        background: `radial-gradient(circle at center, 
+                            #ff6600 0%,     /* Hot Orange Center */
+                            #ffcc99 20%,    /* Peach Transition */
+                            #00ccff 45%,    /* Sky Blue Inner */
+                            #29ffff 65%,    /* Cyan Outer Ring */
+                            transparent 85% /* Falloff */
+                        )`,
+                        filter: 'blur(70px)',
+                    }}
+                />
+            </div>
+
+            {/* --- 2. MAIN CONTENT LAYER --- */}
             <motion.div
-                animate={{
-                    opacity: [0.6, 0.9, 0.6],
-                    scale: [1, 1.2, 1],
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                // Changed bg-orange-200 to bg-orange-400 and added mix-blend-multiply
-                className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-orange-400/20 rounded-full blur-[120px] pointer-events-none z-0 mix-blend-multiply"
-            />
-
-            {/* 2. THE ANAMORPHIC GLARE - Added COLOR-BURN for edge contrast */}
-            <motion.div
-                animate={{ x: [-50, 50, -50] }}
-                transition={{ duration: 15, repeat: Infinity }}
-                // This will look like a warm "streak" across the screen
-                className="absolute top-1/2 left-[-25%] w-[150%] h-[200px] bg-gradient-to-r from-transparent via-orange-300/30 to-transparent blur-[80px] pointer-events-none z-0 rotate-[-15deg] mix-blend-color-burn"
-            />
-
-            {/* 3. BOKEH BALLS - Using 'soft-light' to make them feel like lens artifacts */}
-            <div className="absolute bottom-1/4 left-1/4 w-32 h-32 bg-orange-200/40 rounded-full blur-3xl mix-blend-multiply" />
-
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="z-20 text-center px-6"
+                className="relative z-20 text-center px-6"
             >
-                <h1 className="text-5xl md:text-7xl font-bold text-slate-800 mb-4 tracking-tight">
-                    Hi, I'm <span className="text-orange-600 font-light italic">Shyam Mohan V M</span>
-                </h1>
+                {/* TEXT GROUP WITH LEAF SHADOWS */}
+                <div className="relative inline-block">
 
-                <p className="mt-4 text-slate-500 font-mono tracking-[0.3em] uppercase text-xs">
-                    35mm // f/1.4 // ISO 400 // Data
+                    {/* THE "LEAF SHADOW" LAYER (The blurry duplicate) */}
+                    {/* Increased offset and darker multiply color for prominence */}
+                    <span
+                        className="absolute top-4 left-4 w-full blur-xl text-orange-950/60 select-none mix-blend-multiply pointer-events-none translate-y-2"
+                        aria-hidden="true"
+                    >
+                        Hi, I'm Shyam Mohan V M
+                    </span>
+
+                    {/* THE AMBIENT BLOOM (Soft glow behind text) */}
+                    <span
+                        className="absolute inset-0 blur-3xl text-orange-400/20 select-none pointer-events-none"
+                        aria-hidden="true"
+                    >
+                        Hi, I'm Shyam Mohan V M
+                    </span>
+
+                    {/* THE MAIN CRISP TEXT */}
+                    <h1 className="relative text-5xl md:text-7xl font-bold text-slate-900 tracking-tighter">
+                        Hi, I'm <span className="text-orange-600 font-light italic">Shyam Mohan V M</span>
+                    </h1>
+                </div>
+
+                <p className="mt-4 text-slate-500 font-mono tracking-[0.4em] uppercase text-[10px] opacity-80">
+                    35mm // f/1.4 // ISO 400 // SQL!
                 </p>
 
-                <div className="mt-16 flex flex-col items-center gap-6">
-                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
-                        🚧 Processing Negative... 🚧
-                    </h3>
+                <p className="mt-4 text-slate-500 font-mono tracking-[0.4em] uppercase text-[10px] opacity-80">
+                    🚧 Under Construction 🚧
+                </p>
 
-                    <div className="relative p-4 bg-white shadow-2xl shadow-orange-200/20 rounded-sm border border-slate-100 transform -rotate-2 hover:rotate-0 transition-all duration-700">
+                {/* THE POLAROID FRAME */}
+                <div className="mt-20 inline-block p-4 pb-12 bg-white shadow-[20px_20px_60px_rgba(0,0,0,0.08),-10px_-10px_60px_rgba(255,255,255,0.8)] rounded-sm border border-slate-100 transform -rotate-2 hover:rotate-0 transition-all duration-700 ease-in-out cursor-pointer">
+                    <div className="bg-slate-50 overflow-hidden">
                         <img
                             src={loading}
-                            alt="loading"
-                            className="w-64 grayscale opacity-80 hover:grayscale-0 transition-all duration-700"
+                            alt="Processing..."
+                            className="w-64 h-auto grayscale brightness-105 contrast-110 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-1000"
                         />
+                    </div>
+                    {/* Captions like a real print */}
+                    <div className="absolute bottom-4 left-6">
+                        <p className="font-serif italic text-slate-400 text-[10px]">
+                            Negative #14927 // Bengaluru, IN
+                        </p>
                     </div>
                 </div>
             </motion.div>
+
+            {/* --- 3. EDGE VIGNETTE --- */}
+            <div className="absolute inset-0 pointer-events-none z-30 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.02)_100%)]" />
         </section>
     );
 }

@@ -20,7 +20,7 @@ function App() {
   return (
     <Router basename="/portfolio">
       <div className="selection:bg-blue-100 min-h-screen bg-slate-50 font-sans">
-        <FilmGrain />
+        {/* <FilmGrain /> */}
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
