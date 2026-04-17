@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 // Ensure this path matches your project structure
 import loading from '../assets/acatxio-graphics-card-14927_512.gif';
@@ -66,7 +67,7 @@ export default function Hero() {
                 </div>
 
                 <p className="mt-4 text-slate-500 font-mono tracking-[0.4em] uppercase text-[10px] opacity-80">
-                    35mm // f/1.4 // ISO 400 // SQL!
+                    35mm // f/1.4 // ISO 400 // SQL?!
                 </p>
 
                 <p className="mt-4 text-slate-500 font-mono tracking-[0.4em] uppercase text-[10px] opacity-80">

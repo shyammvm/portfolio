@@ -1,17 +1,48 @@
-import { useState } from 'react';
-import { Menu, X, Camera, Youtube, BookOpen, User, FolderCode, Instagram, Linkedin, Github } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Menu, X, Youtube, Instagram, Linkedin, Github } from 'lucide-react';
+import { motion } from 'framer-motion'; // Added Framer Motion for the sliding line
 import logo from '../assets/Logo.svg';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0); // Tracks current page
 
+    // Automatically update the active link when scrolling
+    useEffect(() => {
+        const container = document.getElementById('main-scroll-container');
+        if (!container) return;
+
+        const handleScroll = () => {
+            // NOTE: If you switched to horizontal scrolling, change 'scrollTop' to 'scrollLeft' 
+            // and 'innerHeight' to 'innerWidth'
+            const scrollPos = container.scrollTop;
+            const index = Math.round(scrollPos / window.innerHeight);
+            setActiveIndex(index);
+        };
+
+        container.addEventListener('scroll', handleScroll);
+        return () => container.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToSection = (index) => {
+        const container = document.getElementById('main-scroll-container');
+        if (container) {
+            container.scrollTo({
+                top: index * window.innerHeight, // Change 'top' to 'left' if horizontal
+                behavior: 'smooth'
+            });
+        }
+        setActiveIndex(index);
+        setIsOpen(false);
+    };
+
+    // Removed the Lucide icons, we will use text ">>" in the render
     const navLinks = [
-        { name: 'Home', to: '/', icon: <User size={18} /> },
-        { name: 'Bio', to: '/bio', icon: <User size={18} /> },
-        { name: 'Projects', to: '/projects', icon: <FolderCode size={18} /> },
-        { name: 'Gallery', to: '/gallery', icon: <Camera size={18} /> },
-        { name: 'Blog', to: '/blog', icon: <BookOpen size={18} /> },
+        { name: 'HOME', index: 0 },
+        { name: 'PROJECTS', index: 1 },
+        { name: 'GALLERY', index: 2 },
+        { name: 'BLOG', index: 3 },
+        { name: 'BIO', index: 4 },
     ];
 
     const socialLinks = [
@@ -23,21 +54,23 @@ export default function Navbar() {
 
     return (
         <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-100">
-            <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
 
                 {/* Aesthetic Logo & Socials */}
-                <div className="flex items-center gap-6">
-                    <Link to="/" className="flex items-center gap-2 group cursor-pointer">
-                        <div className="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => scrollToSection(0)} className="flex items-center gap-2 group cursor-pointer border-none bg-transparent">
+                        <div className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <img src={logo} alt="Logo" className="w-full h-full object-contain" />
                         </div>
-                        <span className="text-xl font-light tracking-tight text-slate-800">
+                        <span className="text-xl font-light tracking-tight text-slate-500">
                             SHYAM<span className="text-red-600 font-bold">.</span>MVM
                         </span>
-                    </Link>
+                    </button>
+
+                    <div className="hidden lg:block w-[1px] h-5 bg-slate-300"></div>
 
                     {/* Desktop Social Links */}
-                    <div className="hidden lg:flex items-center gap-4 border-l border-slate-200 pl-6 ml-2">
+                    <div className="hidden lg:flex items-center gap-3">
                         {socialLinks.map((link) => (
                             <a
                                 key={link.name}
@@ -53,20 +86,32 @@ export default function Navbar() {
                     </div>
                 </div>
 
-                {/* Desktop Links */}
-                <div className="hidden md:flex items-center gap-8">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            to={link.to}
-                            className="group flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-                        >
-                            <span className="text-red-600 group-hover:text-slate-900 transition-colors">
-                                {link.icon}
-                            </span>
-                            {link.name}
-                        </Link>
-                    ))}
+                {/* Desktop Links (Updated with >> and Underline) */}
+                <div className="hidden md:flex items-center gap-4">
+                    {navLinks.map((link) => {
+                        const isActive = activeIndex === link.index;
+
+                        return (
+                            <button
+                                key={link.name}
+                                onClick={() => scrollToSection(link.index)}
+                                className={`relative group flex items-center gap-2 text-xs font-medium transition-colors border-none bg-transparent cursor-pointer py-2
+                                    ${isActive ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'}
+                                `}
+                            >
+                                {link.name}
+
+                                {/* The Sliding Underline */}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="navUnderline"
+                                        className="absolute -bottom-[2px] left-0 w-full h-[2px] bg-red-600 rounded-full"
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    />
+                                )}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Mobile Toggle */}
@@ -78,19 +123,26 @@ export default function Navbar() {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="md:hidden bg-white border-b px-6 py-4 flex flex-col gap-4">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            to={link.to}
-                            onClick={() => setIsOpen(false)}
-                            className="group flex items-center gap-4 text-slate-600 hover:text-slate-900 transition-colors"
-                        >
-                            <span className="text-red-600 group-hover:text-slate-900 transition-colors">
-                                {link.icon}
-                            </span>
-                            {link.name}
-                        </Link>
-                    ))}
+                    {navLinks.map((link) => {
+                        const isActive = activeIndex === link.index;
+
+                        return (
+                            <button
+                                key={link.name}
+                                onClick={() => scrollToSection(link.index)}
+                                className={`group flex items-center gap-3 text-xs font-medium transition-colors border-none bg-transparent cursor-pointer text-left
+                                    ${isActive ? 'text-slate-900' : 'text-slate-500'}
+                                `}
+                            >
+                                <span className={`font-mono tracking-tighter text-xs
+                                    ${isActive ? 'text-red-600' : 'text-slate-300'}
+                                `}>
+                                    {`>>`}
+                                </span>
+                                {link.name}
+                            </button>
+                        );
+                    })}
                     <div className="flex gap-6 pt-4 border-t border-slate-50">
                         {socialLinks.map((link) => (
                             <a
